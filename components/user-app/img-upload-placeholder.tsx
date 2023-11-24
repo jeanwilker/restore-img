@@ -15,8 +15,10 @@ import { FilePreview } from '@/types/filePreview';
 import { useDropzone } from 'react-dropzone';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export function ImageUploadPlaceholder() {
+  const router = useRouter();
   const [file, setFile] = useState<FilePreview | null>();
   const [fileToProcess, setFileToProcess] = useState<{
     path: string;
@@ -42,7 +44,12 @@ export function ImageUploadPlaceholder() {
   });
 
   const handleDialogOpenChange = async (open: boolean) => {
-    console.log(open);
+    if (!open) {
+      setFile(null);
+      setFileToProcess(null);
+      setRestoredFile(null);
+      router.refresh();
+    }
   };
 
   return (
@@ -134,7 +141,7 @@ export function ImageUploadPlaceholder() {
             <DialogFooter>
               <Button
                 onClick={() => {
-                  handleEnhance(fileToProcess, setRestoredFile);
+                  handleEnhance(fileToProcess, setRestoredFile, file, setFile);
                 }}
               >
                 Melhorar

@@ -2,8 +2,6 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { RedirectType, redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 
-import Image from 'next/image';
-
 import { PlusCircleIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -14,11 +12,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sidebar } from '@/components/user-app/user-app-sidebar';
 import UserAppHeader from '@/components/user-app/user-app-header';
 import { ImageUploadPlaceholder } from '@/components/user-app/img-upload-placeholder';
+import { UserAppImages } from '@/components/user-app/user-app-images';
 
 const UserApp = async () => {
   let loggedIn = false;
+  const supabase = createServerComponentClient({ cookies });
+
   try {
-    const supabase = createServerComponentClient({ cookies });
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -33,6 +33,22 @@ const UserApp = async () => {
       redirect('/', RedirectType.replace);
     }
   }
+
+  const { data: restoredImages } = await supabase.storage
+    .from(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER)
+    .list(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER_RESTORED, {
+      limit: 10,
+      offset: 0,
+      sortBy: { column: 'name', order: 'asc' },
+    });
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage
+    .from(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER)
+    .getPublicUrl(
+      process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER_RESTORED,
+    );
 
   return (
     <section className="md:block">
@@ -77,51 +93,32 @@ const UserApp = async () => {
                       </div>
                     </div>
                     <Separator className="my-4" />
-                    <div className="relative">
+                    <div className="flex flex-col items-center justify-center space-y-2">
                       <ImageUploadPlaceholder />
-                      {/*<ScrollArea>
-                          <div className="flex space-x-4 pb-4">
-                            {listenNowAlbums.map((album) => (
-                              <AlbumArtwork
-                                key={album.name}
-                                album={album}
-                                className="w-[250px]"
-                                aspectRatio="portrait"
-                                width={250}
-                                height={330}
-                              />
-                            ))}
-                          </div>
-                          <ScrollBar orientation="horizontal" />
-                            </ScrollArea>*/}
-                    </div>
-                    <div className="mt-6 space-y-1">
-                      <h2 className="text-2xl font-semibold tracking-tight">
-                        Made for You
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        Your personal playlists. Updated daily.
-                      </p>
+                      <ScrollArea>
+                        <div
+                          className="grid grid-cols-1
+                        sm:grid-cols-2
+                        md:grid-cols-3
+                        lg:grid-cols-4
+                        gap-2 justify-evenly"
+                        >
+                          {restoredImages?.map((restoredImage) => (
+                            <UserAppImages
+                              key={restoredImage.name}
+                              image={restoredImage}
+                              className="w-[250px]"
+                              aspectRatio="square"
+                              width={250}
+                              height={330}
+                              publicUrl={publicUrl}
+                            />
+                          ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                      </ScrollArea>
                     </div>
                     <Separator className="my-4" />
-                    <div className="relative">
-                      Lista 2
-                      {/*<ScrollArea>
-                          <div className="flex space-x-4 pb-4">
-                            {madeForYouAlbums.map((album) => (
-                              <AlbumArtwork
-                                key={album.name}
-                                album={album}
-                                className="w-[150px]"
-                                aspectRatio="square"
-                                width={150}
-                                height={150}
-                              />
-                            ))}
-                          </div>
-                          <ScrollBar orientation="horizontal" />
-                        </ScrollArea>*/}
-                    </div>
                   </TabsContent>
                   <TabsContent
                     value="documentos"
