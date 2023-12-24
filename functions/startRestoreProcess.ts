@@ -1,22 +1,31 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { supabaseRouteClient } from '@/services/supabase/supabaseRouteClient';
+import { NextResponse } from 'next/server';
 
-interface NextRequestWithImage extends NextRequest {
-  imageUrl: string;
+interface RestoreProcessRequestBody {
+  version: string;
+  input: {
+    model_name?: string;
+    img?: string;
+    scale?: number;
+    version?: string;
+    input_image?: string;
+    render_factor?: number;
+  };
 }
 
-export async function POST(req: NextRequestWithImage, res: NextResponse) {
-  const { imageUrl } = await req.json();
-
-  const supabase = createRouteHandlerClient({ cookies });
+export async function startRestoreProcess(
+  versionApi: RestoreProcessRequestBody,
+) {
   const {
     data: { session },
     error,
-  } = await supabase.auth.getSession();
+  } = await supabaseRouteClient.auth.getSession();
 
-  if (!session || error)
-    new NextResponse('Faça login para restaurar a imagem', { status: 500 });
+  if (!session || error) {
+    return new NextResponse('Faça login para restaurar a imagem', {
+      status: 500,
+    });
+  }
 
   const startRestoreProcess = await fetch(
     'https://api.replicate.com/v1/predictions',
@@ -27,13 +36,8 @@ export async function POST(req: NextRequestWithImage, res: NextResponse) {
         Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
       },
       body: JSON.stringify({
-        version:
-          '9283608cc6b7be6b65a8e44983db012355fde4132009bf99d976b2f0896856a3',
-        input: {
-          img: imageUrl,
-          scale: 2,
-          version: 'v1.4',
-        },
+        version: versionApi.version,
+        input: versionApi.input || {},
       }),
     },
   );
@@ -63,7 +67,7 @@ export async function POST(req: NextRequestWithImage, res: NextResponse) {
   }
 
   return NextResponse.json(
-    { data: restoredImage ? restoredImage : 'Falha ao restaurar a imagem ' },
+    { data: restoredImage ?? 'Falha ao restaurar a imagem ' },
     { status: 200 },
   );
 }

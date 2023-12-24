@@ -5,7 +5,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className }: Readonly<SidebarProps>) {
   return (
     <div className={cn('pb-12', className)}>
       <div className="space-y-4 py-4">
@@ -49,7 +49,7 @@ export function Sidebar({ className }: SidebarProps) {
                 <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
                 <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19" />
               </svg>
-              Documentos
+              Colorizar
             </Button>
           </div>
         </div>

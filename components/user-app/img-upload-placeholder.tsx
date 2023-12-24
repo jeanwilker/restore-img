@@ -1,31 +1,11 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { handleEnhance } from '@/functions/img-upload/handleEnhance';
-import { useImageDrop } from '@/hooks/useImageDrop';
-import { FilePreview } from '@/types/filePreview';
-import { useDropzone } from 'react-dropzone';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+
+import { useEffect } from 'react';
+import ModalUpload from './modal-upload';
+import useUserActions from '@/store/useUserActions';
 
 export function ImageUploadPlaceholder() {
-  const router = useRouter();
-  const [file, setFile] = useState<FilePreview | null>();
-  const [fileToProcess, setFileToProcess] = useState<{
-    path: string;
-  } | null>(null);
-  const [restoredFile, setRestoredFile] = useState<FilePreview | null>();
-
-  const { onDrop } = useImageDrop({ setFile, setFileToProcess });
+  const { file, restoredFile } = useUserActions();
 
   useEffect(() => {
     return () => {
@@ -33,24 +13,6 @@ export function ImageUploadPlaceholder() {
       if (restoredFile) URL.revokeObjectURL(restoredFile.preview);
     };
   }, [file, restoredFile]);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    maxFiles: 1,
-    accept: {
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpeg', '.jpg'],
-    },
-  });
-
-  const handleDialogOpenChange = async (open: boolean) => {
-    if (!open) {
-      setFile(null);
-      setFileToProcess(null);
-      setRestoredFile(null);
-      router.refresh();
-    }
-  };
 
   return (
     <div className="flex h-[200px] w-full shrink-0 items-center justify-center rounded-md border border-dashed">
@@ -74,81 +36,7 @@ export function ImageUploadPlaceholder() {
         <p className="mb-4 mt-2 text-sm text-muted-foreground">
           A foto que você adicionar será aprimorada pela AI.
         </p>
-        <Dialog onOpenChange={handleDialogOpenChange}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="relative">
-              Adicionar Foto
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Adicionar Foto</DialogTitle>
-              <DialogDescription>
-                Arrastar uma foto para fazer upload e aprimorá-la.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                {!file && (
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    {isDragActive ? (
-                      <p>Solre os arquivos aqui...</p>
-                    ) : (
-                      <p className="flex items-center justify-center bg-blue-100 opacity-70 border border-dashed border-blue-300 rounded-md p-6 h-36">
-                        Arraste ou clique para selecionar uma imagem...
-                      </p>
-                    )}
-                  </div>
-                )}
-                <div className="flex flex-col items-center justify-evenly sm:flex-row gap-2">
-                  {file && (
-                    <div className="flex flex-row flex-wrap drop-shadow-md">
-                      <div className="flex w-48 h-48">
-                        <Image
-                          src={file.preview}
-                          className="w-48 h-48 object-contain rounded-md"
-                          width={192}
-                          height={192}
-                          alt="preview"
-                          onLoad={() => {
-                            URL.revokeObjectURL(file.preview);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {restoredFile && (
-                    <div className="flex flex-row flex-wrap drop-shadow-md">
-                      <div className="flex w-48 h-48">
-                        <Image
-                          src={restoredFile.preview}
-                          className="w-48 h-48 object-contain rounded-md"
-                          width={192}
-                          height={192}
-                          alt="preview"
-                          onLoad={() => {
-                            URL.revokeObjectURL(restoredFile.preview);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={() => {
-                  handleEnhance(fileToProcess, setRestoredFile, file, setFile);
-                }}
-              >
-                Melhorar
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <ModalUpload />
       </div>
     </div>
   );

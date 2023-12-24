@@ -14,7 +14,7 @@ import {
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import { RestoredImage } from '@/types';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { downloadImage } from '@/functions/downloadImage';
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   image: RestoredImage;
@@ -33,24 +33,6 @@ export function UserAppImages({
   className,
   ...props
 }: AlbumArtworkProps) {
-  const downloadImage = async (image: string) => {
-    const supabase = createClientComponentClient();
-    const { data, error } = await supabase.storage
-      .from(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER)
-      .download(
-        `${process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER_RESTORED}/${image}`,
-      );
-
-    if (data) {
-      const url = URL.createObjectURL(data);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = image;
-      link.click();
-      URL.revokeObjectURL(url);
-    }
-  };
-
   return (
     <div className={cn('space-y-3', className)} {...props}>
       <ContextMenu>
@@ -69,7 +51,7 @@ export function UserAppImages({
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">
-          <ContextMenuItem>Adicione sia coleção</ContextMenuItem>
+          <ContextMenuItem>Adicione sua coleção</ContextMenuItem>
           <ContextMenuSub>
             <ContextMenuSubTrigger>Adicionar à lista</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48">
@@ -78,23 +60,6 @@ export function UserAppImages({
                 Nova Coleção
               </ContextMenuItem>
               <ContextMenuSeparator />
-              {/*{playlists.map((playlist) => (
-                <ContextMenuItem key={playlist}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="mr-2 h-4 w-4"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3" />
-                  </svg>
-                  {playlist}
-                </ContextMenuItem>
-              ))}*/}
             </ContextMenuSubContent>
           </ContextMenuSub>
           <ContextMenuSeparator />

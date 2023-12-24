@@ -1,4 +1,3 @@
-// useImageDrop.ts
 import { useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { FilePreview } from '@/types/filePreview';
@@ -21,6 +20,7 @@ export const useImageDrop = ({
           setFile({
             file,
             preview: URL.createObjectURL(file),
+            name: file.name,
           });
 
           const supabase = createClientComponentClient();

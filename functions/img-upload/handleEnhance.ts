@@ -1,16 +1,13 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { FilePreview } from '@/types/filePreview';
 
-interface PropsHandleEnhance {
-  path: string;
-}
-
 export const handleEnhance = async (
-  fileToProcess: PropsHandleEnhance | null,
+  fileToProcess: { path: string } | null,
   setRestoredFile: (file: FilePreview | null) => void,
-  file: any,
+  file: FilePreview | null | undefined,
   setFile: (file: FilePreview | null) => void,
 ) => {
+
   try {
     const supabase = createClientComponentClient();
     const {
@@ -19,7 +16,7 @@ export const handleEnhance = async (
       .from(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER)
       .getPublicUrl(`${fileToProcess?.path}`);
 
-    const res = await fetch('/api/ai/replicate', {
+    const res = await fetch('/api/ai/face', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,12 +33,13 @@ export const handleEnhance = async (
     setRestoredFile({
       file: imageBlob,
       preview: URL.createObjectURL(imageBlob),
+      name: file?.name as string,
     });
 
     const { data, error } = await supabase.storage
       .from(process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER)
       .upload(
-        `${process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER_RESTORED}/${file?.file.name}`,
+        `${process.env.NEXT_PUBLIC_SUPABASE_APP_BUCKET_IMAGE_FOLDER_RESTORED}/${file?.name}`,
         imageBlob,
       );
 

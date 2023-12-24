@@ -1,6 +1,5 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { RedirectType, redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
+import { supabaseServerClient } from '@/services/supabase/supabaseServerClient';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CreateAccountForm from '@/components/auth/create-account-form';
 import LogginAccountForm from '@/components/auth/loggin-account-form';
@@ -8,10 +7,9 @@ import LogginAccountForm from '@/components/auth/loggin-account-form';
 export default async function Home() {
   let loggedIn = false;
   try {
-    const supabase = createServerComponentClient({ cookies });
     const {
       data: { session },
-    } = await supabase.auth.getSession();
+    } = await supabaseServerClient.auth.getSession();
 
     if (session) {
       loggedIn = true;
