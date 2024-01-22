@@ -61,7 +61,6 @@ const Home = async () => {
 
                         <div className="flex flex-col items-center justify-center space-y-2">
                           <ImageUploadPlaceholder />
-
                           <RestoredImagesArea />
                         </div>
 

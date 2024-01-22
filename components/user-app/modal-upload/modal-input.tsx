@@ -1,32 +1,27 @@
-import { useImageDrop } from '@/hooks/useImageDrop';
+import { Button } from '@/components/ui/button';
+import useCustomDropzone from '@/lib/dropzone/useDropzone';
 import useUserActions from '@/store/useUserActions';
-import { useDropzone } from 'react-dropzone';
 
 const ModalImput = () => {
-  const { file, setFile, setFileToProcess } = useUserActions();
-  const { onDrop } = useImageDrop({ setFile, setFileToProcess });
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    maxFiles: 1,
-    accept: {
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpeg', '.jpg'],
-    },
-  });
+  const { file } = useUserActions();
+  const { rootProps, inputProps, isDragActive, open } = useCustomDropzone();
 
   return (
     <>
       {!file && (
-        <div {...getRootProps()}>
-          <input {...getInputProps()} />
+        <div
+          {...rootProps}
+          className="flex flex-col gap-4 items-center justify-center bg-blue-100 border border-dashed border-blue-300 rounded-md p-6 h-36"
+        >
+          <input {...inputProps} />
           {isDragActive ? (
             <p>Solre o arquivo aqui...</p>
           ) : (
-            <p className="flex items-center justify-center bg-blue-100 opacity-70 border border-dashed border-blue-300 rounded-md p-6 h-36">
-              Arraste ou clique para selecionar um a...
-            </p>
+            <p>Arraste ou clique botão para selecionar uma imagem</p>
           )}
+          <Button type="button" onClick={open}>
+            Add Imagem
+          </Button>
         </div>
       )}
     </>

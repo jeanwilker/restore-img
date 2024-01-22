@@ -1,3 +1,8 @@
+
+import { RestoredImage } from ".";
+import { SectionName } from "./context";
+import { FilePreview } from "./filePreview";
+
 export interface ActiveSectionStore {
   activeOption: SectionName;
   setActiveOption: (section: SectionName) => void;

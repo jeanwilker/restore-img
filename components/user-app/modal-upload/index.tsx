@@ -44,7 +44,7 @@ const ModalUpload = () => {
           Adicionar arquivo
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Adicionar arquivo</DialogTitle>
           <DialogDescription>
@@ -54,7 +54,7 @@ const ModalUpload = () => {
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
             <ModalImput />
-            <div className="flex flex-col items-center justify-evenly sm:flex-row gap-2">
+            <div className="flex flex-col items-center justify-between gap-2">
               <ModalImages />
             </div>
           </div>
