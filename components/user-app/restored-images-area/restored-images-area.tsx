@@ -1,9 +1,9 @@
-'use client';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { UserAppImages } from '../user-app-images';
-import useUserActions from '@/store/useUserActions';
-import { useEffect } from 'react';
-import { getRestoredImages } from '@/services/supabase/getRestoredImages';
+"use client";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { UserAppImages } from "../user-app-images";
+import useUserActions from "@/store/useUserActions";
+import { useEffect } from "react";
+import { getRestoredImages } from "@/services/supabase/getRestoredImages";
 
 const RestoredImagesArea = () => {
   const {
@@ -17,7 +17,7 @@ const RestoredImagesArea = () => {
   useEffect(() => {
     const fetchRestoredImages = async () => {
       const { restoredImages, publicUrl } = await getRestoredImages(
-        activeOption,
+        activeOption
       );
       setRestoredImages(restoredImages);
       setPublicUrl(publicUrl);

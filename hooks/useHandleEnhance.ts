@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import useUserActions from '@/store/useUserActions';
+import useProcessing from '@/store/useProcessing';
 
 const useEnhanceImage = () => {
-  const [processing, setProcessing] = useState(false);
+  const { processing, setProcessing } = useProcessing();
   const { fileToProcess, setRestoredFile, file, setFile, activeOption } =
     useUserActions();
 

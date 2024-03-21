@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, TouchEvent } from 'react';
+import { useEffect, useRef, useState, TouchEvent } from "react";
 
 export const useImageSlider = () => {
   const [imageRevealFraction, setImageRevealFraction] = useState(0.5);
@@ -21,13 +21,13 @@ export const useImageSlider = () => {
     });
   };
 
-  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchMove = (e: TouchEvent<HTMLButtonElement>) => {
     slide(e.touches.item(0).clientX);
   };
 
   const handleMouseDown = () => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -35,14 +35,14 @@ export const useImageSlider = () => {
   };
 
   const handleMouseUp = () => {
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
   };
 
   useEffect(() => {
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 

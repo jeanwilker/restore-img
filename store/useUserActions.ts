@@ -1,5 +1,11 @@
 import { ActiveSectionStore } from '@/types/activeSectionContextType';
+import { FilePreview } from '@/types/filePreview';
 import { create } from 'zustand';
+
+interface FileHistoryItem {
+  original: FilePreview;
+  restored: FilePreview | null;
+}
 
 const useUserActions = create<ActiveSectionStore>((set) => ({
   activeOption: 'Fotos',
@@ -14,6 +20,17 @@ const useUserActions = create<ActiveSectionStore>((set) => ({
   setRestoredImages: (restoredImages) => set({ restoredImages }),
   publicUrl: '',
   setPublicUrl: (publicUrl) => set({ publicUrl }),
+
+  imageRevisions: [],
+  setImageRevisions: (file, restoredFile) => {
+    set((state) => ({
+      imageRevisions: [
+        ...state.imageRevisions,
+        { original: file, restored: restoredFile },
+      ],
+    }));
+  },
+  resetImageRevisions: () => set({ imageRevisions: [] }),
 }));
 
 export default useUserActions;

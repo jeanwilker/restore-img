@@ -1,7 +1,11 @@
-
 import { RestoredImage } from ".";
 import { SectionName } from "./context";
 import { FilePreview } from "./filePreview";
+
+interface ImageVersion {
+  original: FilePreview;
+  restored?: FilePreview | null;
+}
 
 export interface ActiveSectionStore {
   activeOption: SectionName;
@@ -16,4 +20,8 @@ export interface ActiveSectionStore {
   setRestoredImages: (restoredImages: RestoredImage[] | null) => void;
   publicUrl: string;
   setPublicUrl: (publicUrl: string) => void;
+
+  //imageRevisions: ImageVersion[];
+  imageRevisions: ({ original: FilePreview; restored: FilePreview | null; })[];
+  setImageRevisions: (file: FilePreview, restoredFile: FilePreview) => void;
 }

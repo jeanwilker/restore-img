@@ -11,15 +11,21 @@ import {
 } from '@/components/ui/dialog';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import ModalImages from './moda-images';
+import BoxImages from './modal-box-img';
 import ModalButtons from './modal-buttons';
 import ModalImput from './modal-input';
 import useUserActions from '@/store/useUserActions';
 
 const ModalUpload = () => {
   const router = useRouter();
-  const { file, setFile, setFileToProcess, restoredFile, setRestoredFile } =
-    useUserActions();
+  const {
+    file,
+    setFile,
+    setFileToProcess,
+    restoredFile,
+    setRestoredFile,
+    resetImageRevisions,
+  } = useUserActions();
 
   useEffect(() => {
     return () => {
@@ -33,6 +39,7 @@ const ModalUpload = () => {
       setFile(null);
       setFileToProcess(null);
       setRestoredFile(null);
+      resetImageRevisions();
       router.refresh();
     }
   };
@@ -55,7 +62,7 @@ const ModalUpload = () => {
           <div className="grid gap-2">
             <ModalImput />
             <div className="flex flex-col items-center justify-between gap-2">
-              <ModalImages />
+              <BoxImages />
             </div>
           </div>
         </div>
